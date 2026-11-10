@@ -6,6 +6,14 @@ export interface NavigationItem {
   iconCircle?: boolean;
 }
 
+export interface HeaderAction {
+  id: string;
+  label: string;
+  path: string;
+  variant: "primary" | "outline";
+  icon: "plus" | "warehouse";
+}
+
 export const navigation = {
   home: {
     id: "home",
@@ -99,6 +107,25 @@ const additionalPageTitles: Record<string, string> = {
   "/plans/approve": "اعتماد الخطة",
 };
 
+const headerActionsByRoute: Record<string, HeaderAction[]> = {
+  "/projects": [
+    {
+      id: "warehouse",
+      label: "المخزن الرئيسي",
+      path: "/warehouse",
+      variant: "outline",
+      icon: "warehouse",
+    },
+    {
+      id: "new-project",
+      label: "مشروع جديد",
+      path: "/projects/new",
+      variant: "primary",
+      icon: "plus",
+    },
+  ],
+};
+
 export function getNavigationTitle(pathname: string): string {
   const exactPage = Object.values(navigation).find(
     (item) => item.path === pathname,
@@ -117,4 +144,8 @@ export function getNavigationTitle(pathname: string): string {
   }
 
   return "صفحة غير موجودة";
+}
+
+export function getHeaderActions(pathname: string): HeaderAction[] {
+  return headerActionsByRoute[pathname] ?? [];
 }

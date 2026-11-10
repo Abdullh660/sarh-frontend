@@ -92,10 +92,12 @@
 
 .projects-summary {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(max(200px, calc((100% - 36px) / 4)), 1fr)
+  );
   gap: 12px;
 }
-
 .projects-summary__card {
   display: flex;
   flex-direction: column;

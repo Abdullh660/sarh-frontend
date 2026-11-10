@@ -1,7 +1,14 @@
 import { useState } from "react";
-import { Outlet, useLocation } from "react-router";
 
-import { getNavigationTitle } from "../../core/navigation/navigation.config";
+import {
+    Outlet,
+    useLocation,
+} from "react-router";
+
+import {
+    getNavigationTitle,
+    getHeaderActions,
+} from "../../core/navigation/navigation.config";
 
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
@@ -29,6 +36,10 @@ export function AppLayout() {
         location.pathname
     );
 
+    const pageActions = getHeaderActions(
+        location.pathname
+    );
+
     function toggleSidebar() {
         const nextValue = !collapsed;
 
@@ -40,7 +51,7 @@ export function AppLayout() {
                 nextValue ? "1" : "0"
             );
         } catch {
-            // If storage is unavailable, state still works.
+            // Sidebar still works without storage.
         }
     }
 
@@ -59,7 +70,10 @@ export function AppLayout() {
             />
 
             <div className="sarh-app-layout__workspace">
-                <Header title={pageTitle} />
+                <Header
+                    title={pageTitle}
+                    actions={pageActions}
+                />
 
                 <main
                     id="sarh-main-content"

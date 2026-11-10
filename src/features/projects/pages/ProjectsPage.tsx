@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "react-router";
+import { useSearchParams } from "react-router";
 
 import { Button, Card } from "../../../components/ui";
 
@@ -16,7 +16,9 @@ import type {
 
 import "./ProjectsPage.css";
 
-function getStatus(value: string | null): ProjectStatus {
+function getStatus(
+    value: string | null
+): ProjectStatus {
     if (value === "draft" || value === "closed") {
         return value;
     }
@@ -24,7 +26,9 @@ function getStatus(value: string | null): ProjectStatus {
     return "active";
 }
 
-function getSort(value: string | null): ProjectSort {
+function getSort(
+    value: string | null
+): ProjectSort {
     if (value === "nearest" || value === "name") {
         return value;
     }
@@ -33,7 +37,8 @@ function getSort(value: string | null): ProjectSort {
 }
 
 export function ProjectsPage() {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams, setSearchParams] =
+        useSearchParams();
 
     const status = getStatus(
         searchParams.get("status")
@@ -54,7 +59,9 @@ export function ProjectsPage() {
         setSearchParams(
             (current) => {
                 const next = new URLSearchParams(current);
+
                 next.set("status", nextStatus);
+
                 return next;
             },
             { replace: true }
@@ -65,7 +72,9 @@ export function ProjectsPage() {
         setSearchParams(
             (current) => {
                 const next = new URLSearchParams(current);
+
                 next.set("sort", nextSort);
+
                 return next;
             },
             { replace: true }
@@ -123,56 +132,15 @@ export function ProjectsPage() {
 
     return (
         <div className="projects-page">
-            <div className="projects-page__actions">
-                <Link
-                    to="/warehouse"
-                    className="projects-page__action projects-page__action--outline"
-                >
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M12 3.5 20 8v8l-8 4.5L4 16V8zM4 8l8 4.5L20 8M12 12.5v8" />
-                    </svg>
-
-                    المخزن الرئيسي
-                </Link>
-
-                <Link
-                    to="/projects/new"
-                    className="projects-page__action projects-page__action--primary"
-                >
-                    <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M12 5v14M5 12h14" />
-                    </svg>
-
-                    مشروع جديد
-                </Link>
-            </div>
-
             <Card className="projects-page__panel">
                 <div className="projects-page__intro">
                     <h2>كل المشاريع</h2>
                     <p>{overview.description}</p>
                 </div>
 
-                <ProjectSummaryGrid metrics={overview.metrics} />
+                <ProjectSummaryGrid
+                    metrics={overview.metrics}
+                />
             </Card>
 
             <Card className="projects-page__panel">
