@@ -1,6 +1,11 @@
 import { useState } from "react";
 
-import { Button, Card, Badge } from "../../../components/ui";
+import {
+    Button,
+    Card,
+    Badge,
+} from "../../../components/ui";
+
 import { useProjects } from "../hooks/useProjects";
 
 import "./ProjectsPage.css";
@@ -8,7 +13,8 @@ import "./ProjectsPage.css";
 type ProjectFilter = "all" | "active";
 
 export function ProjectsPage() {
-    const [filter, setFilter] = useState<ProjectFilter>("all");
+    const [filter, setFilter] =
+        useState<ProjectFilter>("all");
 
     const {
         data: projects = [],
@@ -17,36 +23,48 @@ export function ProjectsPage() {
     } = useProjects();
 
     if (isPending) {
-        return <main className="page-container">جاري تحميل المشاريع...</main>;
+        return (
+            <section className="projects-page">
+                <Card>جاري تحميل المشاريع...</Card>
+            </section>
+        );
     }
 
     if (isError) {
-        return <main className="page-container">حدث خطأ أثناء تحميل المشاريع.</main>;
+        return (
+            <section className="projects-page" role="alert">
+                <Card>حدث خطأ أثناء تحميل المشاريع.</Card>
+            </section>
+        );
     }
 
     const filteredProjects = projects.filter((project) => {
-        if (filter === "all") return true;
+        if (filter === "all") {
+            return true;
+        }
 
         return project.status === "active";
     });
 
     return (
-        <main className="page-container projects-page">
-            <header className="projects-page__header">
+        <section className="projects-page">
+            <div className="projects-page__header">
                 <div>
-                    <h1>المشاريع</h1>
+                    <h2>كل المشاريع</h2>
                     <p>قائمة المشاريع المسجلة في النظام</p>
                 </div>
 
                 <Badge variant="neutral">
                     {projects.length} مشاريع
                 </Badge>
-            </header>
+            </div>
 
             <Card>
                 <div className="projects-page__filters">
                     <Button
-                        variant={filter === "all" ? "primary" : "outline"}
+                        variant={
+                            filter === "all" ? "primary" : "outline"
+                        }
                         size="sm"
                         aria-pressed={filter === "all"}
                         onClick={() => setFilter("all")}
@@ -55,7 +73,9 @@ export function ProjectsPage() {
                     </Button>
 
                     <Button
-                        variant={filter === "active" ? "primary" : "outline"}
+                        variant={
+                            filter === "active" ? "primary" : "outline"
+                        }
                         size="sm"
                         aria-pressed={filter === "active"}
                         onClick={() => setFilter("active")}
@@ -70,8 +90,8 @@ export function ProjectsPage() {
                     <ul className="projects-page__list">
                         {filteredProjects.map((project) => (
                             <li
-                                className="projects-page__item"
                                 key={project.id}
+                                className="projects-page__item"
                             >
                                 <div>
                                     <strong>{project.name}</strong>
@@ -94,6 +114,6 @@ export function ProjectsPage() {
                     </ul>
                 )}
             </Card>
-        </main>
+        </section>
     );
 }

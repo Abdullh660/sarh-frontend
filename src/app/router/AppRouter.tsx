@@ -1,30 +1,71 @@
 import {
     BrowserRouter,
-    Navigate,
     Route,
     Routes,
 } from "react-router";
 
+import { AppLayout } from "../../components/layout/AppLayout";
+import { pendingPages } from "../../core/navigation/navigation.config";
+
 import { ProjectsPage } from "../../features/projects";
+
+interface PendingPageProps {
+    title: string;
+}
+
+function PendingPage({ title }: PendingPageProps) {
+    return (
+        <section className="sarh-pending-page">
+            <h2>{title}</h2>
+            <p>
+                هذه الواجهة قيد التحويل إلى React.
+                سيتم تجهيزها في المراحل القادمة.
+            </p>
+        </section>
+    );
+}
+
+function NotFoundPage() {
+    return (
+        <section className="sarh-pending-page">
+            <h2>الصفحة غير موجودة</h2>
+            <p>تأكد من عنوان الصفحة الذي تحاول فتحه.</p>
+        </section>
+    );
+}
 
 export function AppRouter() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route
-                    path="/"
-                    element={<Navigate to="/projects" replace />}
-                />
+                <Route element={<AppLayout />}>
+                    <Route
+                        index
+                        element={<PendingPage title="الرئيسية" />}
+                    />
 
-                <Route
-                    path="/projects"
-                    element={<ProjectsPage />}
-                />
+                    <Route
+                        path="projects"
+                        element={<ProjectsPage />}
+                    />
 
-                <Route
-                    path="*"
-                    element={<div>الصفحة غير موجودة</div>}
-                />
+                    {pendingPages
+                        .filter((page) => page.path !== "/")
+                        .map((page) => (
+                            <Route
+                                key={page.id}
+                                path={page.path.slice(1)}
+                                element={
+                                    <PendingPage title={page.label} />
+                                }
+                            />
+                        ))}
+
+                    <Route
+                        path="*"
+                        element={<NotFoundPage />}
+                    />
+                </Route>
             </Routes>
         </BrowserRouter>
     );
