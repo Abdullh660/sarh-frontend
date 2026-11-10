@@ -1,3 +1,5 @@
+/* Header page actions */
+
 .sarh-header__page-actions {
   display: flex;
   align-items: center;
@@ -23,6 +25,7 @@
 
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 
   transition:
     background-color 0.2s ease,
@@ -50,9 +53,64 @@
   color: var(--color-text);
 }
 
-.sarh-header__action:focus-visible {
+.sarh-header__action:focus-visible,
+.sarh-header__breadcrumbs a:focus-visible {
   outline: 3px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+/* Breadcrumbs */
+
+.sarh-header__breadcrumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.sarh-header__breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sarh-header__breadcrumb-item a {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.sarh-header__breadcrumb-item a:hover {
+  color: var(--color-text);
+}
+
+.sarh-header__breadcrumb-item > span {
+  color: var(--color-text-secondary);
+  font-size: 18px;
+}
+
+/* Keep header elements in one row on desktop */
+
+@media (min-width: 1101px) {
+  .sarh-header.sarh-header {
+    flex-wrap: nowrap;
+  }
+
+  .sarh-header .sarh-header__heading {
+    flex-wrap: nowrap;
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 1100px) {
+  .sarh-header.sarh-header {
+    flex-wrap: wrap;
+  }
+
+  .sarh-header__page-actions {
+    gap: 8px;
+  }
 }
 
 @media (max-width: 800px) {
@@ -60,13 +118,13 @@
     flex-wrap: wrap;
   }
 
-  .sarh-header__page-actions {
-    gap: 8px;
-  }
-
   .sarh-header__action {
     min-height: 40px;
     padding: 0 12px;
+    font-size: 12px;
+  }
+
+  .sarh-header__breadcrumbs a {
     font-size: 12px;
   }
 }

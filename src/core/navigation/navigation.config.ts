@@ -6,13 +6,27 @@ export interface NavigationItem {
   iconCircle?: boolean;
 }
 
-export interface HeaderAction {
-  id: string;
+export interface HeaderBreadcrumb {
   label: string;
   path: string;
-  variant: "primary" | "outline";
-  icon: "plus" | "warehouse";
 }
+
+interface HeaderActionBase {
+  id: string;
+  label: string;
+  variant: "primary" | "outline";
+  icon: "plus" | "warehouse" | "save";
+}
+
+export type HeaderAction =
+  | (HeaderActionBase & {
+      type: "link";
+      path: string;
+    })
+  | (HeaderActionBase & {
+      type: "submit";
+      formId: string;
+    });
 
 export const navigation = {
   home: {
@@ -112,6 +126,7 @@ const headerActionsByRoute: Record<string, HeaderAction[]> = {
     {
       id: "warehouse",
       label: "المخزن الرئيسي",
+      type: "link",
       path: "/warehouse",
       variant: "outline",
       icon: "warehouse",
@@ -119,9 +134,30 @@ const headerActionsByRoute: Record<string, HeaderAction[]> = {
     {
       id: "new-project",
       label: "مشروع جديد",
+      type: "link",
       path: "/projects/new",
       variant: "primary",
       icon: "plus",
+    },
+  ],
+
+  "/projects/new": [
+    {
+      id: "save-draft",
+      label: "حفظ كمسودة",
+      type: "submit",
+      formId: "sarh-create-project-form",
+      variant: "outline",
+      icon: "save",
+    },
+  ],
+};
+
+const headerBreadcrumbsByRoute: Record<string, HeaderBreadcrumb[]> = {
+  "/projects/new": [
+    {
+      label: "المشاريع",
+      path: "/projects",
     },
   ],
 };
@@ -148,4 +184,8 @@ export function getNavigationTitle(pathname: string): string {
 
 export function getHeaderActions(pathname: string): HeaderAction[] {
   return headerActionsByRoute[pathname] ?? [];
+}
+
+export function getHeaderBreadcrumbs(pathname: string): HeaderBreadcrumb[] {
+  return headerBreadcrumbsByRoute[pathname] ?? [];
 }

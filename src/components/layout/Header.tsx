@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router";
 
 import type {
     HeaderAction,
+    HeaderBreadcrumb,
 } from "../../core/navigation/navigation.config";
 
 import "./Header.css";
@@ -9,6 +10,7 @@ import "./Header.css";
 interface HeaderProps {
     title: string;
     actions?: HeaderAction[];
+    breadcrumbs?: HeaderBreadcrumb[];
 }
 
 const dateFormatter = new Intl.DateTimeFormat("ar-YE", {
@@ -35,10 +37,19 @@ function HeaderActionIcon({
             strokeLinejoin="round"
             aria-hidden="true"
         >
-            {icon === "plus" ? (
+            {icon === "plus" && (
                 <path d="M12 5v14M5 12h14" />
-            ) : (
+            )}
+
+            {icon === "warehouse" && (
                 <path d="M12 3.5 20 8v8l-8 4.5L4 16V8zM4 8l8 4.5L20 8M12 12.5v8" />
+            )}
+
+            {icon === "save" && (
+                <>
+                    <path d="M4 4h14l2 2v14H4z" />
+                    <path d="M7 4v6h9V4M8 20v-7h8v7" />
+                </>
             )}
         </svg>
     );
@@ -47,12 +58,33 @@ function HeaderActionIcon({
 export function Header({
     title,
     actions = [],
+    breadcrumbs = [],
 }: HeaderProps) {
     const today = dateFormatter.format(new Date());
 
     return (
         <header className="sarh-header">
             <div className="sarh-header__heading">
+                {breadcrumbs.length > 0 && (
+                    <nav
+                        className="sarh-header__breadcrumbs"
+                        aria-label="مسار التنقل"
+                    >
+                        {breadcrumbs.map((breadcrumb) => (
+                            <span
+                                className="sarh-header__breadcrumb-item"
+                                key={breadcrumb.path}
+                            >
+                                <Link to={breadcrumb.path}>
+                                    {breadcrumb.label}
+                                </Link>
+
+                                <span aria-hidden="true">‹</span>
+                            </span>
+                        ))}
+                    </nav>
+                )}
+
                 <h1 className="sarh-header__title">
                     {title}
                 </h1>
@@ -65,19 +97,42 @@ export function Header({
             <div className="sarh-header__actions">
                 {actions.length > 0 && (
                     <div className="sarh-header__page-actions">
-                        {actions.map((action) => (
-                            <Link
-                                key={action.id}
-                                to={action.path}
-                                className={[
-                                    "sarh-header__action",
-                                    `sarh-header__action--${action.variant}`,
-                                ].join(" ")}
-                            >
-                                <HeaderActionIcon icon={action.icon} />
-                                <span>{action.label}</span>
-                            </Link>
-                        ))}
+                        {actions.map((action) => {
+                            const className = [
+                                "sarh-header__action",
+                                `sarh-header__action--${action.variant}`,
+                            ].join(" ");
+
+                            const content = (
+                                <>
+                                    <HeaderActionIcon icon={action.icon} />
+                                    <span>{action.label}</span>
+                                </>
+                            );
+
+                            if (action.type === "submit") {
+                                return (
+                                    <button
+                                        key={action.id}
+                                        type="submit"
+                                        form={action.formId}
+                                        className={className}
+                                    >
+                                        {content}
+                                    </button>
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    key={action.id}
+                                    to={action.path}
+                                    className={className}
+                                >
+                                    {content}
+                                </Link>
+                            );
+                        })}
                     </div>
                 )}
 

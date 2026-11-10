@@ -8,6 +8,7 @@ import {
 import {
     getNavigationTitle,
     getHeaderActions,
+    getHeaderBreadcrumbs,
 } from "../../core/navigation/navigation.config";
 
 import { Sidebar } from "./Sidebar";
@@ -37,6 +38,10 @@ export function AppLayout() {
     );
 
     const pageActions = getHeaderActions(
+        location.pathname
+    );
+
+    const breadcrumbs = getHeaderBreadcrumbs(
         location.pathname
     );
 
@@ -73,6 +78,7 @@ export function AppLayout() {
                 <Header
                     title={pageTitle}
                     actions={pageActions}
+                    breadcrumbs={breadcrumbs}
                 />
 
                 <main

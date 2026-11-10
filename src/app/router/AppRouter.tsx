@@ -10,7 +10,10 @@ import {
     pendingPages,
 } from "../../core/navigation/navigation.config";
 
-import { ProjectsPage } from "../../features/projects";
+import {
+    ProjectsPage,
+    CreateProjectPage,
+} from "../../features/projects";
 
 interface PendingPageProps {
     title: string;
@@ -20,7 +23,6 @@ function PendingPage({ title }: PendingPageProps) {
     return (
         <section className="sarh-pending-page">
             <h2>{title}</h2>
-
             <p>
                 هذه الواجهة قيد التحويل إلى React.
                 سيتم تجهيزها في المراحل القادمة.
@@ -33,51 +35,20 @@ function NotFoundPage() {
     return (
         <section className="sarh-pending-page">
             <h2>الصفحة غير موجودة</h2>
-
-            <p>
-                تأكد من عنوان الصفحة الذي تحاول فتحه.
-            </p>
+            <p>تأكد من عنوان الصفحة.</p>
         </section>
     );
 }
 
 const additionalPendingRoutes = [
-    {
-        path: "projects/new",
-        title: "إنشاء مشروع جديد",
-    },
-    {
-        path: "projects/archive",
-        title: "أرشيف المشاريع",
-    },
-    {
-        path: "approvals",
-        title: "الاعتمادات",
-    },
-    {
-        path: "blockers",
-        title: "العوائق",
-    },
-    {
-        path: "planning",
-        title: "الخطة الزمنية",
-    },
-    {
-        path: "handover",
-        title: "التسليم",
-    },
-    {
-        path: "custody",
-        title: "العُهد",
-    },
-    {
-        path: "materials",
-        title: "المواد",
-    },
-    {
-        path: "plans/approve",
-        title: "اعتماد الخطة",
-    },
+    { path: "projects/archive", title: "أرشيف المشاريع" },
+    { path: "approvals", title: "الاعتمادات" },
+    { path: "blockers", title: "العوائق" },
+    { path: "planning", title: "الخطة الزمنية" },
+    { path: "handover", title: "التسليم" },
+    { path: "custody", title: "العُهد" },
+    { path: "materials", title: "المواد" },
+    { path: "plans/approve", title: "اعتماد الخطة" },
 ];
 
 export function AppRouter() {
@@ -87,14 +58,31 @@ export function AppRouter() {
                 <Route element={<AppLayout />}>
                     <Route
                         index
-                        element={
-                            <PendingPage title="الرئيسية" />
-                        }
+                        element={<PendingPage title="الرئيسية" />}
                     />
 
                     <Route
                         path="projects"
                         element={<ProjectsPage />}
+                    />
+
+                    <Route
+                        path="projects/new"
+                        element={<CreateProjectPage />}
+                    />
+
+                    <Route
+                        path="projects/:projectId/setup"
+                        element={
+                            <PendingPage title="التفصيل والعلاقات" />
+                        }
+                    />
+
+                    <Route
+                        path="projects/:projectId"
+                        element={
+                            <PendingPage title="تفاصيل المشروع" />
+                        }
                     />
 
                     {additionalPendingRoutes.map((route) => (
@@ -106,13 +94,6 @@ export function AppRouter() {
                             }
                         />
                     ))}
-
-                    <Route
-                        path="projects/:projectId"
-                        element={
-                            <PendingPage title="تفاصيل المشروع" />
-                        }
-                    />
 
                     {pendingPages
                         .filter((page) => page.path !== "/")
