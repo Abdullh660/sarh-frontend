@@ -87,8 +87,34 @@ export const pendingPages: NavigationItem[] = [
   navigation.notifications,
 ];
 
-export function getNavigationTitle(pathname: string): string {
-  const page = Object.values(navigation).find((item) => item.path === pathname);
+const additionalPageTitles: Record<string, string> = {
+  "/projects/new": "مشروع جديد",
+  "/projects/archive": "أرشيف المشاريع",
+  "/approvals": "الاعتمادات",
+  "/blockers": "العوائق",
+  "/planning": "الخطة الزمنية",
+  "/handover": "التسليم",
+  "/custody": "العُهد",
+  "/materials": "المواد",
+  "/plans/approve": "اعتماد الخطة",
+};
 
-  return page?.label ?? "صفحة غير موجودة";
+export function getNavigationTitle(pathname: string): string {
+  const exactPage = Object.values(navigation).find(
+    (item) => item.path === pathname,
+  );
+
+  if (exactPage) {
+    return exactPage.label;
+  }
+
+  if (additionalPageTitles[pathname]) {
+    return additionalPageTitles[pathname];
+  }
+
+  if (pathname.startsWith("/projects/")) {
+    return "تفاصيل المشروع";
+  }
+
+  return "صفحة غير موجودة";
 }

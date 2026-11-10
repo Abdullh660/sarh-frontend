@@ -1,119 +1,192 @@
-import { useState } from "react";
+import { Link, useSearchParams } from "react-router";
 
-import {
-    Button,
-    Card,
-    Badge,
-} from "../../../components/ui";
+import { Button, Card } from "../../../components/ui";
+
+import { ProjectSummaryGrid } from "../components/ProjectSummaryGrid";
+import { ProjectsTable } from "../components/ProjectsTable";
+import { ProjectsHighlights } from "../components/ProjectsHighlights";
 
 import { useProjects } from "../hooks/useProjects";
+import { useProjectsOverview } from "../hooks/useProjectsOverview";
+
+import type {
+    ProjectSort,
+    ProjectStatus,
+} from "../projects.types";
 
 import "./ProjectsPage.css";
 
-type ProjectFilter = "all" | "active";
+function getStatus(value: string | null): ProjectStatus {
+    if (value === "draft" || value === "closed") {
+        return value;
+    }
+
+    return "active";
+}
+
+function getSort(value: string | null): ProjectSort {
+    if (value === "nearest" || value === "name") {
+        return value;
+    }
+
+    return "priority";
+}
 
 export function ProjectsPage() {
-    const [filter, setFilter] =
-        useState<ProjectFilter>("all");
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const {
-        data: projects = [],
-        isPending,
-        isError,
-    } = useProjects();
+    const status = getStatus(
+        searchParams.get("status")
+    );
 
-    if (isPending) {
-        return (
-            <section className="projects-page">
-                <Card>جاري تحميل المشاريع...</Card>
-            </section>
-        );
-    }
+    const sort = getSort(
+        searchParams.get("sort")
+    );
 
-    if (isError) {
-        return (
-            <section className="projects-page" role="alert">
-                <Card>حدث خطأ أثناء تحميل المشاريع.</Card>
-            </section>
-        );
-    }
-
-    const filteredProjects = projects.filter((project) => {
-        if (filter === "all") {
-            return true;
-        }
-
-        return project.status === "active";
+    const projectsQuery = useProjects({
+        status,
+        sort,
     });
 
-    return (
-        <section className="projects-page">
-            <div className="projects-page__header">
-                <div>
-                    <h2>كل المشاريع</h2>
-                    <p>قائمة المشاريع المسجلة في النظام</p>
-                </div>
+    const overviewQuery = useProjectsOverview();
 
-                <Badge variant="neutral">
-                    {projects.length} مشاريع
-                </Badge>
+    function changeStatus(nextStatus: ProjectStatus) {
+        setSearchParams(
+            (current) => {
+                const next = new URLSearchParams(current);
+                next.set("status", nextStatus);
+                return next;
+            },
+            { replace: true }
+        );
+    }
+
+    function changeSort(nextSort: ProjectSort) {
+        setSearchParams(
+            (current) => {
+                const next = new URLSearchParams(current);
+                next.set("sort", nextSort);
+                return next;
+            },
+            { replace: true }
+        );
+    }
+
+    if (
+        projectsQuery.isPending ||
+        overviewQuery.isPending
+    ) {
+        return (
+            <section className="projects-page">
+                <Card className="projects-page__panel">
+                    جاري تحميل بيانات المشاريع...
+                </Card>
+            </section>
+        );
+    }
+
+    if (
+        projectsQuery.isError ||
+        overviewQuery.isError
+    ) {
+        return (
+            <section className="projects-page">
+                <Card className="projects-page__panel">
+                    <div
+                        className="projects-page__error"
+                        role="alert"
+                    >
+                        <strong>
+                            تعذر تحميل بيانات المشاريع
+                        </strong>
+
+                        <p>
+                            تأكد من اتصال API أو تشغيل Mock API.
+                        </p>
+
+                        <Button
+                            onClick={() => {
+                                void projectsQuery.refetch();
+                                void overviewQuery.refetch();
+                            }}
+                        >
+                            إعادة المحاولة
+                        </Button>
+                    </div>
+                </Card>
+            </section>
+        );
+    }
+
+    const projects = projectsQuery.data;
+    const overview = overviewQuery.data;
+
+    return (
+        <div className="projects-page">
+            <div className="projects-page__actions">
+                <Link
+                    to="/warehouse"
+                    className="projects-page__action projects-page__action--outline"
+                >
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M12 3.5 20 8v8l-8 4.5L4 16V8zM4 8l8 4.5L20 8M12 12.5v8" />
+                    </svg>
+
+                    المخزن الرئيسي
+                </Link>
+
+                <Link
+                    to="/projects/new"
+                    className="projects-page__action projects-page__action--primary"
+                >
+                    <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M12 5v14M5 12h14" />
+                    </svg>
+
+                    مشروع جديد
+                </Link>
             </div>
 
-            <Card>
-                <div className="projects-page__filters">
-                    <Button
-                        variant={
-                            filter === "all" ? "primary" : "outline"
-                        }
-                        size="sm"
-                        aria-pressed={filter === "all"}
-                        onClick={() => setFilter("all")}
-                    >
-                        كل المشاريع
-                    </Button>
-
-                    <Button
-                        variant={
-                            filter === "active" ? "primary" : "outline"
-                        }
-                        size="sm"
-                        aria-pressed={filter === "active"}
-                        onClick={() => setFilter("active")}
-                    >
-                        الجارية
-                    </Button>
+            <Card className="projects-page__panel">
+                <div className="projects-page__intro">
+                    <h2>كل المشاريع</h2>
+                    <p>{overview.description}</p>
                 </div>
 
-                {filteredProjects.length === 0 ? (
-                    <p>لا توجد مشاريع مطابقة.</p>
-                ) : (
-                    <ul className="projects-page__list">
-                        {filteredProjects.map((project) => (
-                            <li
-                                key={project.id}
-                                className="projects-page__item"
-                            >
-                                <div>
-                                    <strong>{project.name}</strong>
-                                    <p>{project.id}</p>
-                                </div>
-
-                                <Badge
-                                    variant={
-                                        project.status === "completed"
-                                            ? "success"
-                                            : "warning"
-                                    }
-                                >
-                                    {project.status === "completed"
-                                        ? "مكتمل"
-                                        : "قيد التنفيذ"}
-                                </Badge>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                <ProjectSummaryGrid metrics={overview.metrics} />
             </Card>
-        </section>
+
+            <Card className="projects-page__panel">
+                <ProjectsTable
+                    result={projects}
+                    counts={overview.counts}
+                    status={status}
+                    sort={sort}
+                    onStatusChange={changeStatus}
+                    onSortChange={changeSort}
+                />
+            </Card>
+
+            <ProjectsHighlights overview={overview} />
+        </div>
     );
 }
