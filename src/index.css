@@ -1,0 +1,44 @@
+:root {
+  font-family: Tahoma, "Segoe UI", sans-serif;
+  color: #182337;
+  background: #f5f7fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.page-container {
+  max-width: 1100px;
+  margin: 48px auto;
+  padding: 24px;
+}
+
+.project-list {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.project-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e4e8ee;
+  border-radius: 12px;
+  background: #fff;
+}
