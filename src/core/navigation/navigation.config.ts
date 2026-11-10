@@ -35,18 +35,21 @@ export const navigation = {
     path: "/",
     iconPath: "M4 11.5 12 5l8 6.5M6.5 10v9h11v-9",
   },
+
   projects: {
     id: "projects",
     label: "المشاريع",
     path: "/projects",
     iconPath: "M4 3.5h10v17H4zM14 9h5v11.5h-5M7 7.5h1.5M7 11h1.5M7 14.5h1.5",
   },
+
   warehouse: {
     id: "warehouse",
     label: "المخزن الرئيسي",
     path: "/warehouse",
     iconPath: "M12 3.5 20 8v8l-8 4.5L4 16V8zM4 8l8 4.5L20 8M12 12.5v8",
   },
+
   team: {
     id: "team",
     label: "الفريق",
@@ -54,12 +57,14 @@ export const navigation = {
     iconPath:
       "M9 4.8a3.2 3.2 0 1 0 .01 0M3.5 19c.6-3.2 2.8-5 5.5-5s4.9 1.8 5.5 5M15.5 5.2a3 3 0 0 1 0 5.6M17 14.3c1.9.6 3.1 2.2 3.5 4.7",
   },
+
   reports: {
     id: "reports",
     label: "التقارير",
     path: "/reports",
     iconPath: "M5 20V10M10 20V4M15 20v-7M20 20v-4",
   },
+
   settings: {
     id: "settings",
     label: "الإعدادات",
@@ -68,6 +73,7 @@ export const navigation = {
       "M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8",
     iconCircle: true,
   },
+
   more: {
     id: "more",
     label: "المزيد",
@@ -75,6 +81,7 @@ export const navigation = {
     iconPath:
       "M4.5 4.5h6v6h-6zM13.5 4.5h6v6h-6zM4.5 13.5h6v6h-6zM13.5 13.5h6v6h-6z",
   },
+
   notifications: {
     id: "notifications",
     label: "التنبيهات",
@@ -162,17 +169,38 @@ const headerBreadcrumbsByRoute: Record<string, HeaderBreadcrumb[]> = {
   ],
 };
 
+const isSetupRoute = (pathname: string) =>
+  /^\/projects\/[^/]+\/setup$/.test(pathname);
+
+const isAssignRoute = (pathname: string) =>
+  /^\/projects\/[^/]+\/assign$/.test(pathname);
+
+const isApprovalRoute = (pathname: string) =>
+  /^\/projects\/[^/]+\/approve$/.test(pathname);
+
 export function getNavigationTitle(pathname: string): string {
-  const exactPage = Object.values(navigation).find(
+  const exact = Object.values(navigation).find(
     (item) => item.path === pathname,
   );
 
-  if (exactPage) {
-    return exactPage.label;
+  if (exact) {
+    return exact.label;
   }
 
   if (additionalPageTitles[pathname]) {
     return additionalPageTitles[pathname];
+  }
+
+  if (isSetupRoute(pathname)) {
+    return "تفصيل الخطة";
+  }
+
+  if (isAssignRoute(pathname)) {
+    return "إسناد الأعمال";
+  }
+
+  if (isApprovalRoute(pathname)) {
+    return "اعتماد الخطة";
   }
 
   if (pathname.startsWith("/projects/")) {
@@ -183,9 +211,64 @@ export function getNavigationTitle(pathname: string): string {
 }
 
 export function getHeaderActions(pathname: string): HeaderAction[] {
+  if (isSetupRoute(pathname)) {
+    return [
+      {
+        id: "save-plan",
+        label: "حفظ التعديلات",
+        type: "submit",
+        formId: "sarh-plan-save-form",
+        variant: "outline",
+        icon: "save",
+      },
+      {
+        id: "next-assignment",
+        label: "التالي: الإسناد",
+        type: "submit",
+        formId: "sarh-plan-next-form",
+        variant: "primary",
+        icon: "plus",
+      },
+    ];
+  }
+
+  if (isAssignRoute(pathname)) {
+    return [
+      {
+        id: "save-assignments",
+        label: "حفظ الإسنادات",
+        type: "submit",
+        formId: "sarh-assignment-save-form",
+        variant: "outline",
+        icon: "save",
+      },
+      {
+        id: "next-approval",
+        label: "التالي: اعتماد الخطة",
+        type: "submit",
+        formId: "sarh-assignment-next-form",
+        variant: "primary",
+        icon: "plus",
+      },
+    ];
+  }
+
   return headerActionsByRoute[pathname] ?? [];
 }
 
 export function getHeaderBreadcrumbs(pathname: string): HeaderBreadcrumb[] {
+  if (
+    isSetupRoute(pathname) ||
+    isAssignRoute(pathname) ||
+    isApprovalRoute(pathname)
+  ) {
+    return [
+      {
+        label: "المشاريع",
+        path: "/projects",
+      },
+    ];
+  }
+
   return headerBreadcrumbsByRoute[pathname] ?? [];
 }
