@@ -1,0 +1,41 @@
+@font-face {
+  font-family: "Ping";
+  src: url("/assets/ping-regular.otf") format("opentype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ping";
+  src: url("/assets/ping-medium.otf") format("opentype");
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ping";
+  src: url("/assets/ping-bold.otf") format("opentype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Ping";
+  src: url("/assets/ping-black.otf") format("opentype");
+  font-weight: 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Changa";
+  src: url("/assets/changa-arabic.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Changa";
+  src: url("/assets/changa-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}

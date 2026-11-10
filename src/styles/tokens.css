@@ -1,0 +1,37 @@
+:root {
+  /* Brand */
+  --color-primary: #e0831c;
+  --color-primary-dark: #dc5e11;
+
+  /* Text */
+  --color-text: #181818;
+  --color-text-secondary: #5e6670;
+
+  /* Backgrounds */
+  --color-background: #ecebe8;
+  --color-surface: #ffffff;
+  --color-surface-secondary: #f2f2f0;
+
+  /* Borders */
+  --color-border: #dadad6;
+
+  /* Status */
+  --color-danger: #cf3b2b;
+
+  /* Typography */
+  --font-body: "Ping", sans-serif;
+  --font-heading: "Changa", "Ping", sans-serif;
+
+  /* Spacing */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+  --spacing-8: 32px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+}
